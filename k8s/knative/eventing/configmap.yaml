@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graph-events
+data:
+  channel-template-spec: |
+    apiVersion: messaging.knative.dev/v1
+    kind: InMemoryChannel
