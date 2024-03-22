@@ -9,7 +9,11 @@ let MindwmTmuxPaneSessionId = std.contract.from_predicate
   ) in
 {
   MindwmUser = {
-    name | MindwmUserName
+    name | MindwmUserName,
+    k8s_namespace 
+      | validKubernetesResourceName
+      | default  
+      = "user-%{name}"
   },
   MindwmHost = {
     name | MindwmHostName
