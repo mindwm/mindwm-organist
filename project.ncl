@@ -3,11 +3,7 @@ let organist = inputs.organist in
 let k8s_namespace = import "./k8s/namespace.yaml" in
 let knative_memory_broker = import "./k8s/knative/eventing/broker-memory.ncl" in
 let users = import "./users.yaml" in
-let teams = {
-	alpha = {
-		name = "Alpha"
-	}
-} in
+let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
 {
   shells = organist.shells.Bash,
 
@@ -18,47 +14,47 @@ let teams = {
   shells.dev = {
     packages.hello = organist.import_nix "nixpkgs#hello",
   },
-  files = std.record.from_array (users
+  files = std.record.from_array (mindwm_sessions
     |> std.array.map
       (
-        fun user_record => {
-          field = "%{user_record.username}.yaml",
+        fun session => {
+          field = "%{session.user.name}/namespace.yaml",
           value = {
             materialisation_method = 'Copy,
 	    content = std.serialize 'Yaml
               (
  	        k8s_namespace & {
-		  metadata.name | force = user_record.username,
-		  metadata.labels."kubernetes.io/metadata.name" | force = user_record.username
+		  metadata.name | force = session.user.name,
+		  metadata.labels."kubernetes.io/metadata.name" | force = session.user.name
                 }
               )
-          }
-        }
-      )
-   ) & std.record.from_array (users
+          } 
+	} 
+      ) 
+   ) & std.record.from_array (mindwm_sessions
     |> std.array.map
       (
-        fun user_record => {
-          field = "%{user_record.username}/broker.yaml",
+        fun session => {
+          field = "%{session.user.name}/user-broker.yaml",
           value = {
             materialisation_method = 'Copy,
 	    content = std.serialize 'Yaml
-		(knative_memory_broker user_record.username).broker
-          }
-        }
-      )
-   ) & std.record.from_array (users
+              (knative_memory_broker session.user.name).broker
+          } 
+	} 
+      ) 
+   ) & std.record.from_array (mindwm_sessions
     |> std.array.map
       (
-        fun user_record => {
-          field = "%{user_record.username}/broker_configmap.yaml",
+        fun session => {
+          field = "%{session.user.name}/user-broker-configmap.yaml",
           value = {
             materialisation_method = 'Copy,
 	    content = std.serialize 'Yaml
-		(knative_memory_broker user_record.username).configmap
-          }
-        }
-      )
-   ) 
+              (knative_memory_broker session.user.name).configmap
+          } 
+	} 
+      ) 
+   )
 }
   | organist.OrganistExpression
