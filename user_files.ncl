@@ -1,4 +1,4 @@
-let knative_memory_broker = import "./k8s/knative/eventing/broker-memory.ncl" in
+let knative_memory_broker = import "./k8s/knative/eventing/broker-memory/broker.ncl" in
 let k8s_user_namespace = import "./k8s/user-namespace.ncl" in
 let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in 
 {
