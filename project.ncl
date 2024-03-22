@@ -2,7 +2,6 @@ let inputs = import "./nickel.lock.ncl" in
 let organist = inputs.organist in
 let k8s_namespace = import "./k8s/namespace.yaml" in
 let knative_memory_broker = import "./k8s/knative/eventing/broker-memory.ncl" in
-let users = import "./users.yaml" in
 let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
 {
   shells = organist.shells.Bash,

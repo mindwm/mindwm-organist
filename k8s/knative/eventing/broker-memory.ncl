@@ -2,10 +2,12 @@ let configMapName = fun name => "%{name}-configmap" in
 fun name => {
 	broker = (import "./broker.yaml") & { 
 		metadata.name | force = name,
+                metadata.namespace | force = name,
 		spec.config.name | force = configMapName name
 	},
 	configmap = (import "./configmap.yaml") & {
-		metadata.name | force = configMapName name
+		metadata.name | force = configMapName name,
+                metadata.namespace | force = name
 	}
 
 }
