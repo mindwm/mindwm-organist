@@ -1,0 +1,18 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  name: mindwmbroker
+  namespace: user
+spec:
+  config:
+    apiVersion: v1
+    kind: ConfigMap
+    name: config-natjsm-channel
+    namespace: user
+  delivery:
+    deadLetterSink:
+      ref:
+        apiVersion: serving.knative.dev/v1
+        kind: Service
+        name: dead-letter-broker

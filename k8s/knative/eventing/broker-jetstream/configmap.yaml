@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-natjsm-channel
+  namespace: user
+  labels:
+    eventing.knative.dev/release: devel
+data:
+  channelTemplateSpec: |
+    apiVersion: messaging.knative.dev/v1alpha1
+    kind: NatsJetStreamChannel
+    spec:
+      stream:
+        overrideName: mindwm_user_mindwm-dev1
+        config:
+          additionalSubjects: 
+            - "mindwm.user.mindwm-dev1.>"
