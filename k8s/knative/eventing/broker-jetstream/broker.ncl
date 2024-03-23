@@ -2,7 +2,9 @@ let configMapName = fun name => "host-%{name}-jsm-broker-configmap" in
 fun username hostname => {
 	broker = (import "./broker.yaml") & { 
 		metadata.name | force = hostname,
-		spec.config.name | force = configMapName hostname
+		spec.config.name | force = configMapName hostname,
+                spec.config.namespace | force = "user-%{username}"
+            
 	},
 	configmap = (import "./configmap.yaml") & {
 		metadata.name | force = configMapName hostname,
