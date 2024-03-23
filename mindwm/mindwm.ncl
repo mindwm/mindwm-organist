@@ -26,6 +26,32 @@ let { MindwmTmuxPaneSession, .. } = import "./mindwm-schema.ncl" in
 	  } 
         ]
       }      
+    },
+    {
+      user =
+      {
+ 	name = "user",
+      },
+      host = 
+      [
+        {
+          name = "mindwm-dev1"
+        }
+      ],
+      session_id = "efdc1f58-e5ef-11ee-91cf-83550cdc0865",
+      tmux = {
+        socket = "/tmp/tmux-1000/default",
+        session = [
+          {
+	    name = "/tmp/tmux-1000/mindwm-ai-demo",
+	    pane = [     
+	     {
+	       id = 0
+	     } 
+	    ]
+	  } 
+        ]
+      }      
     }
   ]
 }
