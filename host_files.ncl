@@ -3,7 +3,9 @@ let k8s_user_namespace = import "./k8s/mindwm_user_namespace.ncl" in
 let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in 
 {
   # TODO(@metacoma) get rid of temp `_files` variable
-  _configmap = mindwm_sessions
+  _configmap
+    | not_exported
+    = mindwm_sessions
     |> std.array.map 
      (
        fun session => session.host |> std.array.map(
@@ -18,7 +20,9 @@ let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
           }
         ) 
      ), 
-  _broker = mindwm_sessions
+  _broker 
+    | not_exported
+    = mindwm_sessions
     |> std.array.map 
      (
        fun session => session.host |> std.array.map(
@@ -33,9 +37,13 @@ let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
           }
         ) 
      ), 
+  files 
+    = std.record.from_array(std.array.concat _broker _configmap 
+    |> std.array.map(
+      fun n => { 
+	field = (std.array.at 0 n).field,
+        value = (std.array.at 0 n).value
+      }
+    )),
 
-  broker = std.array.at 0 _broker,
-  configmap = std.array.at 0 _configmap,
-  files = std.record.from_array(std.array.concat broker configmap)
-   
 }
