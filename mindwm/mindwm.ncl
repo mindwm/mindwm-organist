@@ -17,7 +17,7 @@ let { MindwmTmuxPaneSession, .. } = import "./mindwm-schema.ncl" in
         socket = "/tmp/tmux-1000/mindwm-ai-demo",
         session = [
           {
-	    name = "teamA",
+	    name = "teama",
 	    pane = [     
 	     {
 	       id = 5
@@ -43,7 +43,7 @@ let { MindwmTmuxPaneSession, .. } = import "./mindwm-schema.ncl" in
         socket = "/tmp/tmux-1000/default",
         session = [
           {
-	    name = "teamA",
+	    name = "teama",
 	    pane = [     
 	     {
 	       id = 0

@@ -13,6 +13,6 @@ let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
     packages.hello = organist.import_nix "nixpkgs#hello",
   },
   files = (import "./user_files.ncl").files & (import "./host_files.ncl").files & (import "./k8s/neo4j/helm.ncl").files
-    & (import "./context_broker.ncl").files,
+    & (import "./context_broker.ncl").files & (import "./context_user.ncl").files,
 }
   | organist.OrganistExpression
