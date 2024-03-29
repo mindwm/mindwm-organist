@@ -9,9 +9,9 @@ let ContextBrokerName = fun context_name => "context-broker-" ++ context_name in
   contextBroker | not_exported = memory_broker (ContextBrokerName ContextName),
   kafkaSource | not_exported = kafka_source Namespace "graph-events" KafkaBootstrapServerList KafkaTopics contextBroker.broker.metadata.name,
   files = {
-      "k8s/%{ContextName}/context-broker.yml" = std.serialize 'Yaml contextBroker.broker,
-      "k8s/%{ContextName}/context-broker-configmap.yml" = std.serialize 'Yaml contextBroker.configmap,
-      "k8s/%{ContextName}/kafkaSource.yml" = std.serialize 'Yaml kafkaSource
+      "k8s/%{ContextName}/context-broker.yml" = { content = std.serialize 'Yaml contextBroker.broker },
+      "k8s/%{ContextName}/context-broker-configmap.yml" = { content = std.serialize 'Yaml contextBroker.configmap},
+      "k8s/%{ContextName}/kafkaSource.yml" = { content = std.serialize 'Yaml kafkaSource},
   }
 
   
