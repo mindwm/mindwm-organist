@@ -12,6 +12,6 @@ let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
   shells.dev = {
     packages.hello = organist.import_nix "nixpkgs#hello",
   },
-  files = (import "./user_files.ncl").files & (import "./host_files.ncl").files
+  files = (import "./user_files.ncl").files & (import "./host_files.ncl").files & (import "./k8s/neo4j/helm.ncl").files,
 }
   | organist.OrganistExpression

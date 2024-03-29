@@ -14,10 +14,10 @@ let { MindwmTmuxPaneSession, .. } = import "./mindwm-schema.ncl" in
       ],
       session_id = "982bd7be-e831-11ee-9f2f-a732b78f201b",
       tmux = {
-        socket = "/tmp/tmux-1000/default",
+        socket = "/tmp/tmux-1000/mindwm-ai-demo",
         session = [
           {
-	    name = "abc",
+	    name = "teamA",
 	    pane = [     
 	     {
 	       id = 5
@@ -43,7 +43,7 @@ let { MindwmTmuxPaneSession, .. } = import "./mindwm-schema.ncl" in
         socket = "/tmp/tmux-1000/default",
         session = [
           {
-	    name = "/tmp/tmux-1000/mindwm-ai-demo",
+	    name = "teamA",
 	    pane = [     
 	     {
 	       id = 0
