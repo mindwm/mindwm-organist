@@ -23,5 +23,5 @@ let MindwmTmuxPaneSessionId = std.contract.from_predicate
     host | Array MindwmHost,
     session_id | MindwmTmuxPaneSessionId,
     tmux | TmuxServer
-  }
+  },
 }
