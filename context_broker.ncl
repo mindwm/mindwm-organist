@@ -12,7 +12,7 @@ let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
   contextBroker | not_exported = memory_broker (ContextBrokerName ContextName),
   kafkaSource | not_exported = kafka_source Namespace "graph-events" KafkaBootstrapServerList KafkaTopics contextBroker.broker.metadata.name,
   event_display | not_exported = KnativeServing Namespace "event-display" "gcr.io/knative-releases/knative.dev/eventing/cmd/event_display" [],
-  io_context | not_exported = KnativeServing Namespace "io-context" "docker.io/metacoma/neomodel:latest" [
+  io_context | not_exported = KnativeServing Namespace "io-context" "10.20.30.211:5000/knative-neomodel:latest" [
       {
         name = "NEO4J_URL",
         value = "bolt://neo4j.%{Namespace}:7687"
