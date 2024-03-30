@@ -40,7 +40,6 @@ let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
       }
     }
   ] {apiVersion = "serving.knative.dev/v1", kind = "Service", name = io_context.metadata.name} {apiVersion = "serving.knative.dev/v1", kind = "Service", name = "event-display"},
-
   files = {
       "k8s/%{ContextName}/context-broker.yml" = { content = std.serialize 'Yaml contextBroker.broker },
       "k8s/%{ContextName}/context-broker-configmap.yml" = { content = std.serialize 'Yaml contextBroker.configmap},
