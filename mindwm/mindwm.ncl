@@ -52,6 +52,36 @@ let { MindwmTmuxPaneSession, .. } = import "./mindwm-schema.ncl" in
 	  } 
         ]
       }      
+    },
+    {
+      user =
+      {
+ 	name = "omg",
+      },
+      host = 
+      [
+        {
+          name = "snpnd"
+        }
+      ],
+      session_id = "f3a50b7a-ef42-11ee-926c-db9f7e4ee576",
+      tmux = {
+        socket = "/tmp/tmux-1000/mindwm-ai-demo",
+        session = [
+          {
+	    name = "teama",
+	    pane = [     
+	     {
+	       id = 0
+	     } 
+	    ]
+	  } 
+        ]
+      }      
     }
   ]
+#MINDWM_BACK_NATS_PORT=31137
+#MINDWM_BACK_NATS_SUBJECT_PREFIX=mindwm.omg.snpnd.tmux.L3RtcC90bXV4LTEwMDAvbWluZHdtLWFpLWRlbW8=.f3a50b7a-ef42-11ee-926c-db9f7e4ee576.0.0
+#MINDWM_BACK_NATS_HOST=127.0.0.1
+#MINDWM_ASCIINEMA_REC_PIPE=/tmp/f3a50b7a-ef42-11ee-926c-db9f7e4ee576
 }
