@@ -25,7 +25,7 @@ let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
         name = "NEO4J_PASSWORD",
         value = "password"
       }
-  ],
+  ], # test
   event_display_trigger | not_exported = KnativeTrigger Namespace "context-event-display" contextBroker.broker.metadata.name [
     {
       exact = {
@@ -39,8 +39,7 @@ let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
         type = "iodocument"
       }
     }
-  ] {apiVersion = "serving.knative.dev/v1", kind = "Service", name = io_context.metadata.name} {apiVersion = "serving.knative.dev/v1", kind = "Service", name = "event-display"},
-
+  ] {apiVersion = "serving.knative.dev/v1", kind = "Service", name = io_context.metadata.name } {apiVersion = "serving.knative.dev/v1", kind = "Service", name = "event-display"},
   files = {
       "k8s/%{ContextName}/context-broker.yml" = { content = std.serialize 'Yaml contextBroker.broker },
       "k8s/%{ContextName}/context-broker-configmap.yml" = { content = std.serialize 'Yaml contextBroker.configmap},
