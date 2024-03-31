@@ -1,0 +1,22 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: user-broker-event-display
+  namespace: user-bebebeko
+spec:
+  broker: bebebeko
+  filters:
+    - exact:
+        type: iodocument
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: event-display
+  delivery:
+    deadLetterSink:
+      ref:
+        apiVersion: serving.knative.dev/v1
+        kind: Service
+        name: host-amanda-dead-letter

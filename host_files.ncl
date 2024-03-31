@@ -1,6 +1,8 @@
 let knative_jsm_broker = import "./k8s/knative/eventing/broker-jetstream/broker.ncl" in
+let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
 let k8s_user_namespace = import "./k8s/mindwm_user_namespace.ncl" in
 let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in 
+let KnativeServing = import "./k8s/knative/serving/serving.ncl" in
 {
   # TODO(@metacoma) get rid of temp `_files` variable
   _configmap
@@ -37,8 +39,51 @@ let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
           }
         ) 
      ), 
+
+  _host_broker_to_user_broker 
+    | not_exported
+    = mindwm_sessions
+    |> std.array.map 
+     (
+       fun session => session.host |> std.array.map(
+          fun host => {
+            field = "%{session.user.name}/%{host.name}/host-broker-to-user-broker.yml",
+            value = {
+               content = std.serialize 'Yaml
+                 (
+                  KnativeTrigger (k8s_user_namespace session.user.name) ("trigger-" ++ "host-%{host.name}-to-user-%{session.user.name}") (knative_jsm_broker session.user.name host.name).broker.metadata.name
+                  [
+                    {
+                      exact = {
+                        type = "iodocument"
+                      }
+                    }
+                  # FIXME(metacoma) hardcoded team name
+                  ] {apiVersion = "eventing.knative.dev/v1", kind = "Broker", name = "context-broker-teama", namespace = "context-teama"} {apiVersion = "serving.knative.dev/v1", kind = "Service", name = "event-display"}
+                 )
+            }
+          }
+        ) 
+     ), 
+  _host_event_display 
+    | not_exported
+    = mindwm_sessions
+    |> std.array.map 
+     (
+       fun session => session.host |> std.array.map(
+          fun host => {
+            field = "%{session.user.name}/%{host.name}/event-display.yml",
+            value = {
+               content = std.serialize 'Yaml
+                 (
+                    KnativeServing (k8s_user_namespace session.user.name) "event-display" "gcr.io/knative-releases/knative.dev/eventing/cmd/event_display" []
+                 )
+          }
+        }
+        ) 
+     ), 
   files 
-    = std.record.from_array(std.array.concat _broker _configmap 
+    = std.record.from_array(std.array.concat _broker _configmap |> std.array.concat _host_broker_to_user_broker |> std.array.concat _host_event_display
     |> std.array.map(
       fun n => { 
 	field = (std.array.at 0 n).field,
