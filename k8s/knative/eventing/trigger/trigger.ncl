@@ -16,5 +16,5 @@ fun k8s_namespace trigger_name broker_name trigger_filters sub_ref dead_ref => {
         ref = dead_ref
       }
     }
-  }
 }
+  }

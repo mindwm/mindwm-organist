@@ -2,6 +2,7 @@ let knative_jsm_broker = import "./k8s/knative/eventing/broker-jetstream/broker.
 let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
 let k8s_user_namespace = import "./k8s/mindwm_user_namespace.ncl" in
 let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in 
+let KnativeServing = import "./k8s/knative/serving/serving.ncl" in
 {
   # TODO(@metacoma) get rid of temp `_files` variable
   _configmap
@@ -64,8 +65,25 @@ let mindwm_sessions = (import "./mindwm/mindwm.ncl").MindwmSessions in
           }
         ) 
      ), 
+  _host_event_display 
+    | not_exported
+    = mindwm_sessions
+    |> std.array.map 
+     (
+       fun session => session.host |> std.array.map(
+          fun host => {
+            field = "%{session.user.name}/%{host.name}/event-display.yml",
+            value = {
+               content = std.serialize 'Yaml
+                 (
+                    KnativeServing (k8s_user_namespace session.user.name) "event-display" "gcr.io/knative-releases/knative.dev/eventing/cmd/event_display" []
+                 )
+          }
+        }
+        ) 
+     ), 
   files 
-    = std.record.from_array(std.array.concat _broker _configmap |> std.array.concat _host_broker_to_user_broker
+    = std.record.from_array(std.array.concat _broker _configmap |> std.array.concat _host_broker_to_user_broker |> std.array.concat _host_event_display
     |> std.array.map(
       fun n => { 
 	field = (std.array.at 0 n).field,
