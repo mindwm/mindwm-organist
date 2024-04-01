@@ -1,7 +1,10 @@
 {
-  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   inputs.fenix.url = "github:nix-community/fenix";
+  inputs.nickel_src.url = "github:tweag/nickel?ref=1.5.0";
   inputs.organist.url = "github:nickel-lang/organist";
+  inputs.organist.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.organist.inputs.nickel_src.follows = "nickel_src";
 
   nixConfig = {
     extra-substituters = ["https://organist.cachix.org" "https://nix-community.cachix.org"];
