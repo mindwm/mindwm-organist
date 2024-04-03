@@ -3,14 +3,18 @@ let NamespaceName = fun context_name => "context-" ++ context_name in
 let Namespace = NamespaceName  ContextName in
 let KafkaTopics = [ ContextName ] in
 let memory_broker = import "./k8s/knative/eventing/broker-memory/broker.ncl" in
-let KafkaBootstrapServerList = [ "my-cluster-kafka-bootstrap.kafka:9092" ] in
+let KafkaBootstrapServerList = [ "neo4j-cdc-stream.redpanda.svc.cluster.local:9093" ] in
 let kafka_source = import "./k8s/knative/eventing/kafka-source/kafka-source.ncl" in
+let kafkaTopic = import "./k8s/kafka/topic.ncl" in
+let kafkaTopicName = Namespace ++ "-events" in
 let ContextBrokerName = fun context_name => "context-broker-" ++ context_name in
 let KnativeServing = import "./k8s/knative/serving/serving.ncl" in
 let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
+let RedPandaNamespace = "redpanda" in
 {
   contextBroker | not_exported = memory_broker (ContextBrokerName ContextName),
-  kafkaSource | not_exported = kafka_source Namespace "graph-events" KafkaBootstrapServerList KafkaTopics contextBroker.broker.metadata.name,
+  kafkaSource | not_exported = kafka_source Namespace "graph-events" KafkaBootstrapServerList [ kafkaTopicName ] contextBroker.broker.metadata.name,
+  cdc_topic | not_exported = kafkaTopic RedPandaNamespace KafkaBootstrapServerList kafkaTopicName,
   event_display | not_exported = KnativeServing Namespace "event-display" "gcr.io/knative-releases/knative.dev/eventing/cmd/event_display" [],
   io_context | not_exported = KnativeServing Namespace "io-context" "10.20.30.211:5000/knative-neomodel:latest" [
       {
@@ -48,6 +52,7 @@ let KnativeTrigger = import "./k8s/knative/eventing/trigger/trigger.ncl" in
       "k8s/%{ContextName}/context-broker-io-context.yml" = { content = std.serialize 'Yaml io_context},
       "k8s/%{ContextName}/context-broker-io-context-trigger.yml" = { content = std.serialize 'Yaml io_context_trigger},
       "k8s/%{ContextName}/kafkaSource.yml" = { content = std.serialize 'Yaml kafkaSource},
+      "k8s/%{ContextName}/kafkaTopic.yml" = { content = std.serialize 'Yaml cdc_topic},
       "k8s/%{ContextName}/apply.sh" = { 
         content = m%"
         #!/usr/bin/env bash

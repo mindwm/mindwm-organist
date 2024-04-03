@@ -5,9 +5,10 @@ let HelmChartVersion = String in
 let HelmRepoName = String in
 let ValuesFilePath = String in
 let HelmReleaseName = String in
-let KafkaBootstrap = "my-cluster-kafka-bootstrap.kafka:9092" in
+let KafkaBootstrap = "neo4j-cdc-stream.redpanda.svc.cluster.local:9093" in
 let Neo4jPluginPvcName = "neo4j-plugins" in
 let LocalRepoName = "neo4j" in
+let KafkaTopicName = "context-%{ContextName}-events" in
 let TeamKubernetesNamespace : String -> K8sNamespaceName = fun teamName => "context-" ++ teamName | K8sNamespaceName in
 {
   HelmReleaseSchema | not_exported = {
@@ -41,8 +42,8 @@ let TeamKubernetesNamespace : String -> K8sNamespaceName = fun teamName => "cont
       values | force = (import "./helm_values.yml") & {
         env = {
           NEO4J_kafka_bootstrap_servers | force = KafkaBootstrap,
-          "NEO4J_streams_source_topic_nodes_%{namespace}-events" | force = "*",
-          "NEO4J_streams_source_topic_relationships_%{namespace}-events" | force = "*",
+          "NEO4J_streams_source_topic_nodes_%{KafkaTopicName}" | force = "*",
+          "NEO4J_streams_source_topic_relationships_%{KafkaTopicName}" | force = "*",
         }
       }
     } | HelmReleaseSchema,
